@@ -15,13 +15,6 @@ public class HomeController {
 		return "Hello Word";
 	}
 	
-//	@RequestMapping("/contact")
-//	public List<Contact> getAll(){
-//		return Arrays.asList(
-//				new Contact("1","Rodiel","Martinez"),
-//				new Contact("2","Ariel","Hiciano"),
-//				new Contact("3","Yetti","Mendez")
-//				);
-//	}
+
 
 }
