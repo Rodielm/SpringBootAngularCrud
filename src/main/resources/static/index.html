@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head >
+	<meta charset="ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Spring boot</title>
+
+	<link rel="stylesheet"
+	href="./bower_components/propeller/assets/css/bootstrap.css">
+	<link rel="stylesheet"
+	href="./bower_components/propeller/assets/css/propeller-roboto.css">
+	<link rel="stylesheet"
+	href="./bower_components/propeller/assets/css/propeller.css">
+	<link href="http://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/sweetalert2/6.6.2/sweetalert2.min.css" rel="stylesheet">
+</head>
+
+<style>
+	.layout{
+		padding-top:3%	
+	}
+</style>
+
+<body ng-app="SpringApp">
+
+	<div class="container" ng-controller="AppController">
+		<div class="row layout">
+			<div class="media-left">
+				<div class="pmd-card pmd-card-default pmd-z-depth ">
+					<div class="pmd-card-title">
+						<h2 class="pmd-card-title-text">Contact</h2>
+						<span class="pmd-card-subtitle-text">Click to create a contact -></span>
+						<!--Primary button with a ripple effect-->
+						<button data-target="#form-addContact" data-toggle="modal" class="btn pmd-ripple-effect btn-primary pmd-z-depth" type="button">Add Contact</button>
+						<button id="btnAlert" style="display: none;" type="button"  data-positionX="right" data-positionY="top" data-effect="fadeInUp"  class="btn pmd-ripple-effect btn-danger pmd-z-depth pmd-alert-toggle"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			
+			<div class="pmd-card pmd-z-depth">
+				<div class="pmd-card-title">
+					<h2 class="pmd-card-title-text">Contact List</h2>
+				</br>
+				<div class="alert alert-info" role="alert" ng-hide="contacts && contacts.length > 0">
+					There are no contacts yet.
+				</div>
+			</div>	
+
+			<div class="table-responsive"> 
+				<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Last Name</th>
+							<th>Address</th>
+							<th>Phone</th>
+							<th>Created at</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody >
+						<tr ng-repeat="contact in contacts">
+							<td data-title="Id">{{contact.idcontact}}</td>
+							<td data-title="Name">{{contact.name}}</td>
+							<td data-title="Lastname">{{contact.lastname}}</td>
+							<td data-title="Address">{{contact.address}}</td>
+							<td data-title="Phone">{{contact.phone}}</td>
+							<td data-title="created">{{contact.created_at}}</td>
+							<td data-title="">
+								<button  ng-click="editContact(contact)"  data-target="#form-editContact" data-toggle="modal" class="btn pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-default" type="button"><i class="material-icons pmd-sm " style="color:blue">edit</i></button>
+								<button ng-click="deleteContact(contact)" class="btn pmd-btn-fab pmd-btn-flat pmd-ripple-effect btn-default" type="button"><i class="material-icons pmd-sm" style="color:red">delete</i></button>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- Dialogs Modal -->
+
+	<!-- Dialog with Form Elements -->
+	<div tabindex="-1" class="modal fade" id="form-addContact" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header pmd-modal-bordered">
+					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+					<h2 class="pmd-card-title-text">Add Contact</h2>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" name="formAddContact" >
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<label for="first-name">Name</label>
+							<input type="text" class="mat-input form-control" ng-minlength="3" name="name" ng-model="contact.name" required >
+							<span style="color:red" ng-show="formAddContact.name.$dirty && formAddContact.name.$invalid && formAddContact.name.$error.required">
+								<span class="help-text" ng-show="formAddContact.name.$error.required">Name is required.</span>
+							</span>
+							<!-- <span class="help-text">Input is required!</span>  -->
+						</div>
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<label for="first-name">Last Name</label>
+							<input required type="text" class="mat-input form-control" ng-minlength="3" id="lname" ng-model="contact.lastname" >
+							<span style="color:red" ng-show="formAddContact.lname.$dirty && formAddContact.lname.$invalid">
+								<span class="help-text" ng-show="formAddContact.lname.$error.required">Last name is required.</span>
+							</span>
+
+						</div>
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<label class="control-label">Address</label>
+							<textarea required class="form-control" name="address" ng-minlength="8" ng-model="contact.address" ></textarea>
+							<span style="color:red" ng-show="formAddContact.address.$dirty && formAddContact.address.$invalid">
+								<span class="help-text" ng-show="formAddContact.address.$error.required">address is required.</span>
+							</span>
+
+						</div>
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<label for="first-name">Phone</label>
+							<input type="number" class="mat-input form-control"  
+							ng-minlength="10" ng-maxlength="10"  name="phone" ng-model="contact.phone" 
+							required >
+							<span style="color:red"  ng-show="((formAddContact.phone.$error.minlength ||
+                           formAddContact.phone.$error.maxlength) && formAddContact.phone.$dirty)">
+                           phone number should be 10 digits
+							</span>
+						</div>
+					</form>
+				</div>
+
+				<div class="pmd-modal-action">
+				<button data-dismiss="modal" ng-disabled="formAddContact.$invalid" class="btn pmd-ripple-effect btn-primary" type="button" ng-click="addContact(contact)" >Save changes</button>
+					<button data-dismiss="modal" class="btn pmd-ripple-effect btn-default" type="button">Discard</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div tabindex="-1" class="modal fade" id="form-editContact" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header pmd-modal-bordered">
+					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+					<h2 class="pmd-card-title-text">Edit Contact</h2>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" name="formEditContact" role="form" >
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<input type="text" placeholder="Name" class="mat-input form-control" id="name" ng-model="existingContact.name" required >
+							<span style="color:red" ng-show="formEditContact.name.$dirty && formEditContact.name.$invalid">
+								<span class="help-text" ng-show="formEditContact.name.$error.required">Name is required.</span>
+							</span>
+							<!-- <span class="help-text">Input is required!</span>  -->
+						</div>
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<input type="text" placeholder="Last Name" class="mat-input form-control" name="lname" ng-model="existingContact.lastname" required>
+							<span style="color:red" ng-show="formEditContact.lname.$dirty && formEditContact.lname.$invalid">
+								<span class="help-text" ng-show="formEditContact.lname.$error.required">Last name is required.</span>
+							</span>
+						</div>
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<textarea required placeholder="Address" name="address" class="form-control" ng-model="existingContact.address" ></textarea>
+							<span style="color:red" ng-show="formEditContact.address.$dirty && formEditContact.address.$invalid">
+								<span class="help-text" ng-show="formEditContact.address.$error.required">Adress is required.</span>
+							</span>
+						</div>
+
+						<div class="form-group pmd-textfield pmd-textfield-floating-label">
+							<input type="number" placeholder="Phone" class="mat-input form-control" name="phone" ng-model="existingContact.phone" 
+							required="Your phone">
+							<span style="color:red"  ng-show="((formEditContact.phone.$error.minlength ||
+                           formEditContact.phone.$error.maxlength) && formEditContact.phone.$dirty)">
+                           phone number should be 10 digits
+							</span>
+						</div>
+					</form>
+				</div>
+
+				<div class="pmd-modal-action">
+					<button data-dismiss="modal" ng-disabled="formEditContact.$invalid" class="btn pmd-ripple-effect btn-primary" type="button" ng-click="updateContact(existingContact)" >Save changes</button>
+					<button data-dismiss="modal" class="btn pmd-ripple-effect btn-default" type="button">Discard</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script type="text/javascript" src="./bower_components/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="./bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="./bower_components/angular-route/angular-route.js"></script>
+<script type="text/javascript" src="./bower_components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="./bower_components/propeller/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./bower_components/propeller/assets/js/propeller.min.js"></script>
+<script type="/text/javascript" src="./bower_components/lodash/dist/js/lodash.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/sweetalert2/6.6.2/sweetalert2.min.js"></script>
+
+<script type="text/javascript" src="./app/app.js"></script>
+<script type="text/javascript" src="./app/controllers.js"></script>
+<script type="text/javascript" src="./app/services.js"></script>
+</body>
+</html>
